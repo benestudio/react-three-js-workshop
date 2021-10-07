@@ -1,0 +1,53 @@
+.App {
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  display: flex;
+}
+
+.configContainer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  z-index: 1;
+}
+
+#controls {
+  background: aliceblue;
+  flex: 1;
+  overflow-y: scroll;
+}
+
+#canvas {
+  flex: 2;
+}
+
+.flight-row-header {
+  background: #6183a5;
+}
+
+.flight-row:hover {
+  background: hotpink;
+  cursor: pointer;
+}
+
+.flight-row-selected {
+  background: #ffa9d3 !important;
+}
+
+.flight-row-even {
+  background: aliceblue;
+}
+
+.flight-row-odd {
+  background: #bcd0ec;
+}
+
+.info-bubble {
+  padding: 5px;
+  background: #ffa9d3;
+  border-radius: 10px;
+  border: 2px solid #6183a5;
+  width: max-content;
+  pointer-events: none;
+}
