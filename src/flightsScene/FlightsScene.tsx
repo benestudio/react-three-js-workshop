@@ -3,31 +3,45 @@ import React, { useEffect, useState } from 'react';
 import Globe from '../models/Globe';
 import { Flight } from './Flight';
 import Sun from './Sun';
-import { IAirport } from '../types';
+import { Dictionary, IAirport, IFlight } from '../types';
+import { indexBy } from 'ramda';
+import { parseFlightDates } from '../Utilities';
 
 export default function FlightsScene() {
-  const [airports, setAirports] = useState<IAirport[]>([]);
+  const [flightsList, setFlightsList] = useState<IFlight[]>([]);
+  const [airportsMap, setAirportsMap] = useState<Dictionary<IAirport>>({});
+  const [airportsList, setAirportList] = useState<IAirport[]>([]);
 
   useEffect(() => {
-    fetch('/data/airports.json')
-      .then((e) => e.json())
-      .then((airports) => setAirports(airports));
+    fetch('/data/airports.json', {})
+      .then((airportsResponse) => airportsResponse.json())
+      .then((airportsJson: IAirport[]) => {
+        const airportsMap = indexBy((e) => e.id, airportsJson);
+
+        setAirportsMap(airportsMap);
+        setAirportList(airportsJson);
+      });
   }, []);
 
-  const budapest = airports.find((e) => e.id === 'BUD');
-  const sydney = airports.find((e) => e.id === 'SYD');
+  useEffect(() => {
+    fetch('/data/flights.json', {})
+      .then((flightsResponse) => flightsResponse.json())
+      .then((flightsJson) => flightsJson.map(parseFlightDates))
+      .then((flightsJson: IFlight[]) => setFlightsList(flightsJson));
+  }, []);
+
+  const renderedFlights = flightsList.slice(0, 10);
 
   return (
     <>
       <OrbitControls />
       <Sun />
       <Globe />
-      {airports.length ? (
-        <>
-          <Flight from={budapest!} to={sydney!} />
-          <Flight from={sydney!} to={budapest!} />
-        </>
-      ) : null}
+      {renderedFlights.map((flight) => {
+        const from = airportsMap[flight.departureAirportId];
+        const to = airportsMap[flight.arrivalAirportId];
+        return <Flight key={flight.id} from={from} to={to} />;
+      })}
     </>
   );
 }

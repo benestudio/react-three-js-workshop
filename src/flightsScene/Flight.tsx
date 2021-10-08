@@ -7,7 +7,7 @@ import { FLOAT_HEIGHT, GLOBE_SCALE, LEFT, MAP_TOP } from '../constants';
 import { GLOBE_BASE_RADIUS } from '../models/Globe';
 
 import { IAirport, IFlight } from '../types';
-import { rotationQuaternionForCoordinates } from '../Utilities';
+import { getRotationForDirection, rotationQuaternionForCoordinates } from '../Utilities';
 import { degToRad } from 'three/src/math/MathUtils';
 
 type FlightProperties = {
@@ -37,11 +37,7 @@ export function Flight({ from, to }: { from: IAirport; to: IAirport }) {
 
       flightContainerRef.current.lookAt(worldPositionBefore);
       // .lookAt only sets x/y rotation, it screws up Z, but we can reset it
-      if (from.latitude < to.latitude) {
-        flightContainerRef.current.rotation.z = 0;
-      } else {
-        flightContainerRef.current.rotation.z = Math.PI;
-      }
+      flightContainerRef.current.rotation.z = getRotationForDirection(from, to)!;
     }
   });
 
