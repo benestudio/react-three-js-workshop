@@ -1,12 +1,14 @@
 import { useRef } from 'react';
-import { Group, Quaternion } from 'three';
+import { Group, Quaternion, Vector3 } from 'three';
 import { ThreeEvent, useFrame } from '@react-three/fiber';
 
 import Airplane from '../models/Plane';
-import { FLOAT_HEIGHT, GLOBE_SCALE, LEFT } from '../constants';
+import { FLOAT_HEIGHT, GLOBE_SCALE, LEFT, MAP_TOP } from '../constants';
 import { GLOBE_BASE_RADIUS } from '../models/Globe';
 
 import { IAirport, IFlight } from '../types';
+import { rotationQuaternionForCoordinates } from '../Utilities';
+import { degToRad } from 'three/src/math/MathUtils';
 
 type FlightProperties = {
   from: IAirport;
@@ -16,25 +18,30 @@ type FlightProperties = {
   selected: boolean;
 };
 
-export function Flight() {
+export function Flight({ from, to }: { from: IAirport; to: IAirport }) {
   const rotationBoxRef = useRef<Group>();
   const flightContainerRef = useRef<Group>();
 
   useFrame((state, delta) => {
-    const startQuaternion = new Quaternion().setFromAxisAngle(LEFT, 0);
-    const midQuaternion = new Quaternion().setFromAxisAngle(LEFT, Math.PI);
-    const endQuaternion = new Quaternion().setFromAxisAngle(LEFT, Math.PI * 2);
-    if (rotationBoxRef.current) {
-      const phase = (state.clock.elapsedTime % 3) / 3;
+    const startQuaternion = rotationQuaternionForCoordinates(from.latitude, from.longitude);
+    const endQuaternion = rotationQuaternionForCoordinates(to.latitude, to.longitude);
+
+    if (rotationBoxRef.current && flightContainerRef.current) {
+      const flightTime = 4;
+      const phase = (state.clock.elapsedTime % flightTime) / flightTime;
+      const worldPositionBefore = flightContainerRef.current.getWorldPosition(new Vector3());
 
       const rotationQuaternion = new Quaternion();
-      if (phase < 0.5) {
-        rotationQuaternion.slerpQuaternions(startQuaternion, midQuaternion, phase * 2);
-      } else {
-        rotationQuaternion.slerpQuaternions(midQuaternion, endQuaternion, (phase - 0.5) * 2);
-      }
-
+      rotationQuaternion.slerpQuaternions(startQuaternion, endQuaternion, phase);
       rotationBoxRef.current.setRotationFromQuaternion(rotationQuaternion);
+
+      flightContainerRef.current.lookAt(worldPositionBefore);
+      // .lookAt only sets x/y rotation, it screws up Z, but we can reset it
+      if (from.latitude < to.latitude) {
+        flightContainerRef.current.rotation.z = 0;
+      } else {
+        flightContainerRef.current.rotation.z = Math.PI;
+      }
     }
   });
 
