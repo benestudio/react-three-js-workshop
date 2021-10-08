@@ -1,47 +1,45 @@
 import { OrbitControls } from '@react-three/drei';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import Globe from '../models/Globe';
 import { Flight } from './Flight';
 import Sun from './Sun';
 import { Dictionary, IAirport, IFlight } from '../types';
-import { indexBy } from 'ramda';
-import { parseFlightDates } from '../Utilities';
 import Airport from './Airport';
 
-export default function FlightsScene() {
-  const [flightsList, setFlightsList] = useState<IFlight[]>([]);
-  const [airportsMap, setAirportsMap] = useState<Dictionary<IAirport>>({});
-  const [airportsList, setAirportList] = useState<IAirport[]>([]);
+type FlightsSceneProps = {
+  flightsList: IFlight[];
+  airportsMap: Dictionary<IAirport>;
+  airportsList: IAirport[];
+  setSelectedFlight: (flight: IFlight) => void;
+  selectedFlight: IFlight | null;
+};
 
-  useEffect(() => {
-    fetch('/data/airports.json', {})
-      .then((airportsResponse) => airportsResponse.json())
-      .then((airportsJson: IAirport[]) => {
-        const airportsMap = indexBy((e) => e.id, airportsJson);
-
-        setAirportsMap(airportsMap);
-        setAirportList(airportsJson);
-      });
-  }, []);
-
-  useEffect(() => {
-    fetch('/data/flights.json', {})
-      .then((flightsResponse) => flightsResponse.json())
-      .then((flightsJson) => flightsJson.map(parseFlightDates))
-      .then((flightsJson: IFlight[]) => setFlightsList(flightsJson));
-  }, []);
-
-  const renderedFlights = flightsList.slice(0, 10);
-
+export default function FlightsScene({
+  flightsList,
+  airportsMap,
+  airportsList,
+  setSelectedFlight,
+  selectedFlight,
+}: FlightsSceneProps) {
   return (
     <>
       <OrbitControls />
       <Sun />
       <Globe />
-      {renderedFlights.map((flight) => {
+      {flightsList.map((flight) => {
         const from = airportsMap[flight.departureAirportId];
         const to = airportsMap[flight.arrivalAirportId];
-        return <Flight key={flight.id} from={from} to={to} />;
+        const selected = selectedFlight?.id === flight.id;
+        return (
+          <Flight
+            key={flight.id}
+            flight={flight}
+            from={from}
+            to={to}
+            selected={selected}
+            onFlightClicked={() => setSelectedFlight(flight)}
+          />
+        );
       })}
       {airportsList.map((airport) => {
         return <Airport key={airport.id} airport={airport} />;

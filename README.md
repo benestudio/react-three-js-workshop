@@ -493,6 +493,14 @@ const selected = selectedFlight?.id === flight.id;
 <Airplane selected={selected} onClick={(event) => onFlightClicked(flight, event)} />
 ```
 
+A small bonus: you can add the flight's ID as a floating info-bubble on the selected flight like we did with the cities:
+```typescript jsx
+{ selected && <Html><div className={'info-bubble'}>{flight.id}</div></Html> }
+<Airplane selected={selected} onClick={(event) => onFlightClicked(flight, event)} />
+```
+
+---
+
 ### Step 8 - Global time
 This one is a difficult one, but it's really worth the effort.
 

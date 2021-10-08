@@ -39,18 +39,29 @@ export function FlightFilterControls({
   const [filteredFlights, setFilteredFlights] = useState<IFlight[]>(flights);
 
   useEffect(() => {
-    const filtered = flights.filter((flight) => {
-      return (
-        flight.departureAirportId.includes(departureFilter) &&
-        flight.arrivalAirportId.includes(arrivalFilter) &&
-        flight.id.includes(flightIdFilter) &&
-        (!activeFlightFilter || isInFlightNow(flight, simulationTime))
-      );
-    });
+    const filtered = flights
+      .filter((flight) => {
+        return (
+          flight.departureAirportId.includes(departureFilter) &&
+          flight.arrivalAirportId.includes(arrivalFilter) &&
+          flight.id.includes(flightIdFilter) &&
+          (!activeFlightFilter || isInFlightNow(flight, simulationTime))
+        );
+      })
+      .slice(0, maxFlightCount);
 
     setFilteredFlights(filtered);
     onFilteringChanged(filtered);
-  }, [departureFilter, arrivalFilter, flightIdFilter, activeFlightFilter, flights, onFilteringChanged, simulationTime]);
+  }, [
+    departureFilter,
+    arrivalFilter,
+    flightIdFilter,
+    activeFlightFilter,
+    flights,
+    onFilteringChanged,
+    simulationTime,
+    maxFlightCount,
+  ]);
 
   return (
     <div className="flightFilterControls">

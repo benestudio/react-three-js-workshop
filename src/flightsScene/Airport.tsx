@@ -26,7 +26,11 @@ export default function Airport(props: { airport: IAirport }) {
     if (lightRef.current) {
       const blinkPeriod = 3 + r;
       const phase = (state.clock.elapsedTime % blinkPeriod) / blinkPeriod;
-      lightRef.current.intensity = Math.sin(phase * Math.PI * 2) * 0.5 + 0.5;
+      if (hover) {
+        lightRef.current.intensity = 3;
+      } else {
+        lightRef.current.intensity = Math.sin(phase * Math.PI * 2) * 0.5 + 0.5;
+      }
     }
   });
 

@@ -34,7 +34,7 @@ const hotPinkMaterial = new THREE.MeshStandardMaterial({
   emissiveIntensity: 2.0,
 });
 
-export default function Plane({ ...props }: JSX.IntrinsicElements['group']) {
+export default function Plane({ ...props }: JSX.IntrinsicElements['group'] & { selected: boolean }) {
   const group = useRef<THREE.Group>();
   const { nodes, materials } = useGLTF(PATH_TO_MODEL) as GLTFResult;
   return (
@@ -45,7 +45,11 @@ export default function Plane({ ...props }: JSX.IntrinsicElements['group']) {
         name="tinkerobjcleanermaterialmergergles"
         userData={{ name: 'tinker.obj.cleaner.materialmerger.gles' }}
       >
-        <mesh name="mesh_0" geometry={nodes.mesh_0.geometry} material={hotPinkMaterial || materials.color_10988977} />
+        <mesh
+          name="mesh_0"
+          geometry={nodes.mesh_0.geometry}
+          material={props.selected ? hotPinkMaterial : materials.color_10988977}
+        />
         <mesh name="mesh_1" geometry={nodes.mesh_1.geometry} material={materials.color_15277357} />
         <mesh name="mesh_2" geometry={nodes.mesh_2.geometry} material={materials.color_16448250} />
         <mesh name="mesh_3" geometry={nodes.mesh_3.geometry} material={materials.color_2829873} />
