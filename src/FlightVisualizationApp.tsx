@@ -1,8 +1,8 @@
 import './App.css';
 
 import React from 'react';
-import {Canvas} from '@react-three/fiber';
-import FlightsScene from "./flightsScene/FlightsScene";
+import { Canvas } from '@react-three/fiber';
+import FlightsScene from './flightsScene/FlightsScene';
 
 function FlightVisualizationApp() {
   return (

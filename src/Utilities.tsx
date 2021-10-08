@@ -1,5 +1,5 @@
 import React from 'react';
-import { Quaternion, Vector3 } from 'three';
+import { Color, Quaternion, Vector3 } from 'three';
 import { memoizeWith } from 'ramda';
 import { degToRad } from 'three/src/math/MathUtils';
 
@@ -22,11 +22,20 @@ export function Box(props: {
   );
 }
 
-export function Sphere(props: { position?: [x: number, y: number, z: number]; color?: string; reference?: any }) {
+export function Sphere(props: { position?: [x: number, y: number, z: number]; color?: string; reference?: any; isEmissive?: boolean }) {
+
+  let emissiveProps:any = {}
+  if (props.isEmissive) {
+    emissiveProps = {
+      emissiveIntensity: 1,
+      emissive: new Color(props.color || 'blue')
+    }
+  }
+
   return (
     <mesh {...props} ref={props.reference}>
       <sphereGeometry args={[0.1]} />
-      <meshStandardMaterial color={props.color} />
+      <meshStandardMaterial color={props.color} {...emissiveProps} />
     </mesh>
   );
 }
