@@ -6,6 +6,7 @@ import Sun from './Sun';
 import { Dictionary, IAirport, IFlight } from '../types';
 import { indexBy } from 'ramda';
 import { parseFlightDates } from '../Utilities';
+import Airport from './Airport';
 
 export default function FlightsScene() {
   const [flightsList, setFlightsList] = useState<IFlight[]>([]);
@@ -41,6 +42,9 @@ export default function FlightsScene() {
         const from = airportsMap[flight.departureAirportId];
         const to = airportsMap[flight.arrivalAirportId];
         return <Flight key={flight.id} from={from} to={to} />;
+      })}
+      {airportsList.map((airport) => {
+        return <Airport key={airport.id} airport={airport} />;
       })}
     </>
   );

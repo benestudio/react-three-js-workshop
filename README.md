@@ -329,7 +329,7 @@ Let's create a new object: `flightsScene/Airport.tsx`, and on this simple object
 
 If you create a piece of state to hold the hover-state, then we can conditionally change the color of the box:
 ```typescript jsx
-    const [hover, setHover] = useState(false)
+    const [hover, setHover] = useState(false);
     const rotationQuaternion = rotationQuaternionForCoordinates(props.airport.latitude, props.airport.longitude);
 // ...
    return (
@@ -376,6 +376,11 @@ Lastly, if you want to make it a bit more interesting, add a light to the city t
         color={hover ? 'limegreen' : 'red'}
         position={LIGHT_POSITION}
       />
+
+// where:
+const EARTH_SURFACE_ELEVATION = GLOBE_BASE_RADIUS * GLOBE_SCALE;
+const LIGHT_POSITION: Number3 = [0, EARTH_SURFACE_ELEVATION + 0.04, 0];
+const CITY_POSTION: Number3 = [0, EARTH_SURFACE_ELEVATION, 0];
 ```
 
 ...and you can turn this a bit more alive with some animation:
@@ -387,6 +392,16 @@ useFrame((state, delta) => {
     lightRef.current.intensity = Math.sin(phase * Math.PI *2) * 0.5 + 0.5;
   }
 });
+```
+Or by only conditionally rendering the light, or tying the intensity of the light to the hover state. Get creative :)
+```typescript jsx
+{
+  hover && <pointLight
+    ref={lightRef}
+    color={hover ? 'limegreen' : 'red'}
+    position={LIGHT_POSITION}
+  />
+}
 ```
 
 ---

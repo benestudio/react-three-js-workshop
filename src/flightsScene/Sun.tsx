@@ -7,7 +7,7 @@ export default function Sun() {
   const ref = useRef<PointLight>();
 
   useFrame((state, delta) => {
-    const phase = (state.clock.elapsedTime % 3) / 3;
+    const phase = (state.clock.elapsedTime % 30) / 30;
     const phaseRadians = Math.PI * 2 * phase;
 
     if (ref.current) {
