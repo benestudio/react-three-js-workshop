@@ -7,7 +7,7 @@ import { Dictionary, IAirport, IFlight } from './types';
 import { indexBy } from 'ramda';
 import { parseFlightDates, prettyDate } from './Utilities';
 import { FlightFilterControls } from './components/FilterControls';
-import { SimulationSizeControl } from './components/SimulationControls';
+import { SimulationSizeControl, SimulationSpeedControl } from './components/SimulationControls';
 
 const date = Date.now();
 
@@ -37,13 +37,16 @@ function FlightVisualizationApp() {
   const [selectedFlight, setSelectedFlight] = useState<IFlight | null>(null);
   const [filteredFlights, setFilteredFlights] = useState<IFlight[]>([]);
   const [maxFlightCount, setMaxFlightCount] = useState(20);
+  const [simulationSpeed, setSimulationSpeed] = useState(1);
+  const [simulationTime, setSimulationTime] = useState(date);
 
   return (
     <div className="App">
       <aside className="controlPanel">
         <div className="input-controls">
-          <div>Current date: {prettyDate(new Date(date))}</div>
+          <div>Current date: {prettyDate(new Date(simulationTime))}</div>
           <SimulationSizeControl onMaxFlightCountChange={setMaxFlightCount} />
+          <SimulationSpeedControl onSimulationSpeedChange={setSimulationSpeed} />
         </div>
         <hr />
         <FlightFilterControls
@@ -51,7 +54,7 @@ function FlightVisualizationApp() {
           airports={airportsList}
           airportMap={airportsMap}
           maxFlightCount={maxFlightCount}
-          simulationTime={date}
+          simulationTime={simulationTime}
           selectedFlight={selectedFlight}
           setSelectedFlight={setSelectedFlight}
           onFilteringChanged={setFilteredFlights}
@@ -65,6 +68,8 @@ function FlightVisualizationApp() {
             airportsMap={airportsMap}
             selectedFlight={selectedFlight}
             setSelectedFlight={setSelectedFlight}
+            simulationSpeed={simulationSpeed}
+            onSimulationMinuteTick={setSimulationTime}
           />
         </Canvas>
       </React.Suspense>
