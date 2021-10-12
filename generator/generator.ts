@@ -61,8 +61,8 @@ const generateFlight = (index: number): IFlight => {
     seats: numberOfSeats,
     passengers: numberOfPassengers,
     seatUtilizationPercentage,
-    departureTime: new Date(departureTime).toISOString(),
-    arrivalTime: new Date(arrivalTime).toISOString(),
+    departureTime: new Date(departureTime),
+    arrivalTime: new Date(arrivalTime),
     flightTimeMinutes: Math.floor(flightTime / minutes),
   };
 };
