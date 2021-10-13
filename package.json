@@ -11,6 +11,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "eject": "react-scripts eject",
+    "get": "node ./get.js",
     "prettify": "prettier --write src",
     "generate-data": "ts-node generator/index.ts 1 public/data"
   },
