@@ -31,7 +31,7 @@ You can see the final product here: https://delanni.github.io/react-three-flight
 
 
 ## Steps to build a basic flight visualization app
-Note: This guide doesn't contain all the required code changes. 
+Note: This guide doesn't contain all the required code changes.
 You might need to improvise/bridge between steps, I am not detailing every change, however this git repository contains the incremental changes in different commits!
 
 ### Step 0 - Preparations done by us
@@ -50,10 +50,10 @@ You might need to improvise/bridge between steps, I am not detailing every chang
 Run `yarn` to install the dependencies.
 
 Add dependencies to the libraries we'd be using:
- - [@react-three/fiber](https://www.npmjs.com/package/@react-three/fiber) - The bridge that manages the three <-> react interface
- - [@react-three/drei](https://www.npmjs.com/package/@react-three/drei) - Some utilities that help working with the above
- - [three](https://www.npmjs.com/package/three) (& @types/three) - The 3D library these are all built on
- - [gltfjsx](https://www.npmjs.com/package/@react-three/drei) - A utility to help build JSX interface for GLTF models
+- [three](https://www.npmjs.com/package/three) (& @types/three) - The 3D library these are all built on
+- [@react-three/fiber](https://www.npmjs.com/package/@react-three/fiber) - The bridge that manages the three <-> react interface
+- [@react-three/drei](https://www.npmjs.com/package/@react-three/drei) - Some utilities that help working with the above
+- [gltfjsx](https://www.npmjs.com/package/@react-three/drei) - A utility to help build JSX interface for GLTF models
 
 ```shell
 yarn add @react-three/drei @react-three/fiber three
@@ -75,7 +75,7 @@ In the `FlightVisualizationApp`, you can set up few a basic objects to see the a
   </Canvas>
 ```
 
-This is all right, we can now see and interact the world. 
+This is all right, we can now see and interact the world.
 You can play around with some of the parameters, to see how the world reacts.
 
 Animating properties of 3D objects is an important part of the workshop, let's see what are our options.
@@ -97,30 +97,29 @@ Now we have a blinking strobe light flying around a box.
 ### Step 2 - Bring in the models!
 
 Talk about:
- - meshes
- - materials
- - models
+- meshes
+- materials
+- models
 
 Mention sketchfab.com.
 
-Models downloaded an unzipped to `/public/models/`. 
-It's because our webserver hosts these files, and they're accessible from the browser that'd 
- like to load the models/materials based on urls.
+Models downloaded an unzipped to `/public/models/`.
+It's because our webserver hosts these files, and they're accessible from the browser that'd
+like to load the models/materials based on urls.
 
 More notes in: [this doc](/public/importing-a-new-model.md)
 
 Let's generate model wrappers with `gltfjsx`:
 ```shell
-cd src/
-gltfjsx ../public/models/plane/plane.gltf -t -k -m
-gltfjsx ../public/models/globe/globe.gltf -t -k -m
+gltfjsx public/models/plane/plane.gltf -t -k -m
+gltfjsx public/models/globe/globe.gltf -t -k -m
 ```
 
 We can now include the JSX models to our scene, and we should see something work out, let's correct the files as we proceed:
- - urls
- - scaling
- - positioning
- - contents
+- urls
+- scaling
+- positioning
+- contents
 
 Let's fix the light orbiting the globe.
 
@@ -132,10 +131,10 @@ _(Maybe demonstrate the configurator component)_
 ### Step 3 - Let's fly around the globe
 This section will contain some maths that we tried to keep to the minimum, not to disturb the flow of the workshop.
 
-For the application code not to get too crowded, it is useful to introduce some layers of abstraction. 
+For the application code not to get too crowded, it is useful to introduce some layers of abstraction.
 I'd introduce one that separates the model of a plane from a flight that is supposed to fly between two cities:
- - The plane model bears the responsibility of drawing a plane straight, towards the -Z axis
- - The flight is representing one of these plane models in flight (taking care of movement)
+- The plane model bears the responsibility of drawing a plane straight, towards the -Z axis
+- The flight is representing one of these plane models in flight (taking care of movement)
 
 Let's create a new file `Flight.tsx` close to the `FlightsScene.tsx`.
 
@@ -170,7 +169,7 @@ First, the simplest; the flight can be moved by rotating the bounding box over t
 
 The small issue with this method, is that it's harder to calculate increments between steps to get to a correct end state.
 
-Another method is called interpolation. 
+Another method is called interpolation.
 _Interpolation in general is taking the start and end states, and calculate steps in-between, using a phase indicator._
 
 Let's try this for rotating our airplane:
@@ -194,7 +193,7 @@ Let's try this for rotating our airplane:
   });
 ```
 
-We can abstract the `Sun` similarly to an object in the scene that takes care of its orbit, 
+We can abstract the `Sun` similarly to an object in the scene that takes care of its orbit,
 even add a visible model to show where the sun currently is.
 
 ---
@@ -203,13 +202,13 @@ even add a visible model to show where the sun currently is.
 
 Let's step up our game a notch. Let's include exact positions on the planet, and let's set up chartered flights between two points. For example, between Budapest and Sydney.
 
-It will require two things: 
-- associate our known geolocations with rotation quaternions 
+It will require two things:
+- associate our known geolocations with rotation quaternions
 - and moving the plane between these two
 
-Well - since we already know how to interpolate quaternions, we only need to figure out the first one! Let's get on it! 
+Well - since we already know how to interpolate quaternions, we only need to figure out the first one! Let's get on it!
 
-Oh, maybe one more thing... Let's load some data! 
+Oh, maybe one more thing... Let's load some data!
 We can use the generator to generate some data:
 ```shell
 yarn generate-data
@@ -217,7 +216,7 @@ yarn generate-data
 
 Then we can load this data in `FlightsScene.tsx` with `useEffect` (pay attention to the dependencies, not to re-run it) - and find Sydney and Budapest.
 
-Now - calculating the rotation quaternion from the cities are not that difficult, 
+Now - calculating the rotation quaternion from the cities are not that difficult,
 once you know you can multiply quaternions, you'll basically need to rotate the containing box of the aircraft with the right latitude and longitude amounts.
 
 Lucky for you, you can save this work by using the `rotationQuaternionForCoordinates` function from the utilities we provide for you.
@@ -236,7 +235,7 @@ Pass the cities to the flights, and let's see if the flights appear on the map:
   <Flight city={sydney!} />
 ```
 
-It's this easy, you ask? 
+It's this easy, you ask?
 Well, sort of... (long detailed tangent about world coordinates and how orienting the flight might not be that easy);
 
 Now, we can try to move the flights between the two cities:
@@ -397,10 +396,10 @@ Here comes a big one!
 
 Since this is react, we can use our already familiar ways to filter/sort/select/interact with data.
 
-The workshop tries to focus on the `react`+`threejs` marriage, we'll save you the time of having to write a fancy-fancy filtering UI, that 
+The workshop tries to focus on the `react`+`threejs` marriage, we'll save you the time of having to write a fancy-fancy filtering UI, that
 will allow very basic listing/interaction with the flights' data - you can use `FlightFilterControls` for listing the flights.
 
-Keep in mind, the gateway to the magical 3D world is the `<Canvas>` tag within which, only `@react-three/fiber`'s components are valid. 
+Keep in mind, the gateway to the magical 3D world is the `<Canvas>` tag within which, only `@react-three/fiber`'s components are valid.
 We'll want to use conventional html elements to visualize the data control panels. For this we'll have to lift out the data to the App's level:
 
 ```typescript jsx
@@ -421,7 +420,7 @@ Now we can tuck this data in to a component next to `<Canvas>` outside of its co
     airports={airportsList}
     airportMap={airportsMap}
     maxFlightCount={20}
-    simulationTime={1633708659640}
+    simulationTime={now}
     selectedFlight={selectedFlight}
     setSelectedFlight={setSelectedFlight}
     onFilteringChanged={setFilteredFlights}
@@ -437,7 +436,7 @@ Let's also switch out the fix 20 limitation on the flight number to something th
 const [maxFlightCount, setMaxFlightCount] = useState(20);
 
 <div className="input-controls">
-  <div>Current date: {prettyDate(new Date(date))}</div>
+  <div>Current date: {prettyDate(now)}</div>
   <SimulationSizeControl onMaxFlightCountChange={setMaxFlightCount} />
 </div>
 ```
@@ -448,8 +447,8 @@ If the wiring is right once again, then the slider should limit/unlimit the amou
 
 And I promised selection too...
 
-We already know that `Three.js` objects support `onPointerOver` events - well, so do they support `onClick`. 
-We can add this `onClick` handler to our inside the `Flight` object's `Plane` model. 
+We already know that `Three.js` objects support `onPointerOver` events - well, so do they support `onClick`.
+We can add this `onClick` handler to our inside the `Flight` object's `Plane` model.
 
 Let's implement a selected state and wire the selection event through with setters that we define outside in the common scope.
 
@@ -482,7 +481,7 @@ const selected = selectedFlight?.id === flight.id;
 ### Step 8 - Global time
 This one is a difficult one, but it's really worth the effort.
 
-We're going to implement a global simulation time that's inherently driving the whole simulation. 
+We're going to implement a global simulation time that's inherently driving the whole simulation.
 Yes, everything is already moving, yes, we're already using the `state.clock.elapsedTime` variable, but it just doesn't line up with the time of the flights.
 _(Plus this section shows a nifty trick that you might need in your own simulations too)_.
 
@@ -513,12 +512,12 @@ Once we sneak this variable inside the magic gates of the 3D context, we can sta
   });
 ```
 
-So what we did above, is we added an unsafe variable (`hackedWorldTime`) piggybacking on the global threejs state object. 
+So what we did above, is we added an unsafe variable (`hackedWorldTime`) piggybacking on the global threejs state object.
 We can increment this without any cost in this `useFrame` loop, and we can retrieve this variable in other `useFrame`s.
 
 _Note: I named it "hacked" because it feels a bit outside of the suggested limits of what the react-three world would normally allow us to do, especially with typescript being so strict along the way._
 
-⚠️But: Since we can only use this hook within the `<Canvas>` context, 
+⚠️But: Since we can only use this hook within the `<Canvas>` context,
 we will need to sneak some updates outside to the control panel (so we can use that for showing the time, and filtering "current" flights).
 
 Let's inject a `onSimulationMinuteTick` into the scene, and use that to bubble up some updates at least once a minute in the simulation.
@@ -564,13 +563,13 @@ Our `useFrame` will look like this for the sun:
 
 And this concludes the main points we wanted to cover. We can do further fine-tuning, if we have time. Some ideas are:
 
- - On-click flight information, similar to the city information bubbles + Highlight origin/destination for selected flights
- - Prettier flight paths & scale-to-disappear for flights. Maybe spring-like animations for a comic-y feel
- - Different camera setups - for example: flight POV
- - Use cooler models :) 
- - Improve performance through instancing
- - Improve the lighting setup (directional lights instead of point-lights)
- - Better filtering options
+- On-click flight information, similar to the city information bubbles + Highlight origin/destination for selected flights
+- Prettier flight paths & scale-to-disappear for flights. Maybe spring-like animations for a comic-y feel
+- Different camera setups - for example: flight POV
+- Use cooler models :)
+- Improve performance through instancing
+- Improve the lighting setup (directional lights instead of point-lights)
+- Better filtering options
 
 **You can get a lot more ideas of what's possible with react-three in here**: https://docs.pmnd.rs/react-three-fiber/getting-started/examples
 
