@@ -111,8 +111,8 @@ More notes in: [this doc](/public/importing-a-new-model.md)
 
 Let's generate model wrappers with `gltfjsx`:
 ```shell
-gltfjsx public/models/plane/plane.gltf -t -k -m
-gltfjsx public/models/globe/globe.gltf -t -k -m
+npx gltfjsx public/models/plane/plane.gltf -t -k -m
+npx gltfjsx public/models/globe/globe.gltf -t -k -m
 ```
 
 We can now include the JSX models to our scene, and we should see something work out, let's correct the files as we proceed:
