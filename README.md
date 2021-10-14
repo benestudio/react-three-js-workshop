@@ -329,7 +329,7 @@ Let's create a new object: `flightsScene/Airport.tsx`, and on this simple object
 
 If you create a piece of state to hold the hover-state, then we can conditionally change the color of the box:
 ```typescript jsx
-    const [hover, setHover] = useState(false)
+    const [hover, setHover] = useState(false);
     const rotationQuaternion = rotationQuaternionForCoordinates(props.airport.latitude, props.airport.longitude);
 // ...
    return (
@@ -376,6 +376,11 @@ Lastly, if you want to make it a bit more interesting, add a light to the city t
         color={hover ? 'limegreen' : 'red'}
         position={LIGHT_POSITION}
       />
+
+// where:
+const EARTH_SURFACE_ELEVATION = GLOBE_BASE_RADIUS * GLOBE_SCALE;
+const LIGHT_POSITION: Number3 = [0, EARTH_SURFACE_ELEVATION + 0.04, 0];
+const CITY_POSTION: Number3 = [0, EARTH_SURFACE_ELEVATION, 0];
 ```
 
 ...and you can turn this a bit more alive with some animation:
@@ -387,6 +392,16 @@ useFrame((state, delta) => {
     lightRef.current.intensity = Math.sin(phase * Math.PI *2) * 0.5 + 0.5;
   }
 });
+```
+Or by only conditionally rendering the light, or tying the intensity of the light to the hover state. Get creative :)
+```typescript jsx
+{
+  hover && <pointLight
+    ref={lightRef}
+    color={hover ? 'limegreen' : 'red'}
+    position={LIGHT_POSITION}
+  />
+}
 ```
 
 ---
@@ -478,6 +493,14 @@ const selected = selectedFlight?.id === flight.id;
 <Airplane selected={selected} onClick={(event) => onFlightClicked(flight, event)} />
 ```
 
+A small bonus: you can add the flight's ID as a floating info-bubble on the selected flight like we did with the cities:
+```typescript jsx
+{ selected && <Html><div className={'info-bubble'}>{flight.id}</div></Html> }
+<Airplane selected={selected} onClick={(event) => onFlightClicked(flight, event)} />
+```
+
+---
+
 ### Step 8 - Global time
 This one is a difficult one, but it's really worth the effort.
 
@@ -493,7 +516,7 @@ So let's start!
 
 ```typescript jsx
 // We can use this SimulationSpeedControl - that's pre-written for some simple speed control:
-<SimulationSpeedControl onSimulationSpeedChange={setSimSpeed} />
+<SimulationSpeedControl onSimulationSpeedChange={setSimulationSpeed} />
 ```
 
 Once we sneak this variable inside the magic gates of the 3D context, we can start summarizing the `useFrame`'s deltas, that we scale with the simulation speed.
